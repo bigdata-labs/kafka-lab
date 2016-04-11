@@ -1,0 +1,40 @@
+---
+- hosts: zookeeper
+  sudo: yes
+  vars:
+    - version: preview
+    - user: cloud
+    - group: users
+    ##python -c 'import crypt; print crypt.crypt("cloud", "$1$SomeSalt$")'
+    - password: $1$SomeSalt$15avH4qSlfRSEvC0bIn2./
+
+  tasks:
+    - include: tasks/create-swap-space.yml
+    - include: tasks/common.yml
+    - include: tasks/jdk8.yml
+
+
+    - name: copy zookeeper
+      copy: src="./files/zookeeper/zookeeper-3.4.6.tar.gz" dest="/tmp" owner={{ user }} group={{ group }}
+    - name: unarchive zookeeper
+      unarchive: src="/tmp/zookeeper-3.4.6.tar.gz" dest="/usr/local/" owner={{ user }} group={{ group }} copy=no
+    - file: src="/usr/local/zookeeper-3.4.6" dest="/usr/local/zookeeper" owner={{ user }} group={{ group }} state=link
+    - lineinfile: dest='/etc/profile' line='export ZOOKEEPER_HOME=/usr/local/zookeeper' state=present
+    - lineinfile: dest='/etc/profile' line='export PATH="$PATH:$ZOOKEEPER_HOME_HOME/bin"' state=present
+    - lineinfile: dest='/etc/profile' line='export ZOO_LOG_DIR="/var/log/zookeeper"' state=present
+    
+
+    - name: mkdir ZooKeeper log 
+      file: path=/var/log/zookeeper state=directory mode=0755  owner={{ user }} group={{ group }}
+
+    - file: path="/usr/local/zookeeper/data" state=directory mode=0755  owner={{ user }} group={{ group }}
+    - lineinfile: dest="/usr/local/zookeeper/data/myid" line='{{zk_id}}' state=present create=yes owner={{ user }} group={{ group }}
+
+    - name: config zookeeper
+      copy: src="./files/zookeeper/conf" dest="/usr/local/zookeeper" owner={{ user }} group={{ group }}
+
+
+    - name: zookeeper | Ensure the service is running
+      shell: "sudo su - {{user}}  -c '/usr/local/zookeeper/bin/zkServer.sh start &'"
+
+

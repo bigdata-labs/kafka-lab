@@ -1,0 +1,10 @@
+---
+- name: install unzip
+  apt: name=unzip state=present
+
+- name: install scala
+  copy: src="../files/scala-2.10.6.tgz" dest="/tmp" owner={{ user }} group={{ group }}
+- unarchive: src="/tmp/scala-2.10.6.tgz" dest="/usr/local"  owner={{ user }} group={{ group }} copy=no
+- file: src="/usr/local/scala-2.10.6" dest="/usr/local/scala" owner={{ user }} group={{ group }} state=link
+- lineinfile: dest='/etc/profile' line='export SCALA_HOME=/usr/local/scala' state=present
+- lineinfile: dest='/etc/profile' line='export PATH="$PATH:$SCALA_HOME/bin"' state=present

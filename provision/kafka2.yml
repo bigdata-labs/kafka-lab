@@ -1,0 +1,43 @@
+---
+- hosts: kafka2
+  sudo: yes
+  vars:
+    - version: preview
+    - user: cloud
+    - group: users
+    ##python -c 'import crypt; print crypt.crypt("cloud", "$1$SomeSalt$")'
+    - password: $1$SomeSalt$15avH4qSlfRSEvC0bIn2./
+
+  tasks:
+    - include: tasks/create-swap-space.yml
+    - include: tasks/common.yml
+    - include: tasks/jdk8.yml
+    - include: tasks/scala2.10.yml
+
+
+    - name: copy kafka
+      copy: src="./files/kafka/kafka_2.10-0.9.0.1.tgz" dest="/tmp" owner={{ user }} group={{ group }}
+    - name: unarchive kafka
+      unarchive: src="/tmp/kafka_2.10-0.9.0.1.tgz" dest="/usr/local/" owner={{ user }} group={{ group }} copy=no
+    - file: src="/usr/local/kafka_2.10-0.9.0.1" dest="/usr/local/kafka" owner={{ user }} group={{ group }} state=link
+    - lineinfile: dest='/etc/profile' line='export KAFKA_HOME=/usr/local/kafka' state=present
+    - lineinfile: dest='/etc/profile' line='export PATH="$PATH:$KAFKA_HOME/bin"' state=present
+
+    - name: mkdir kafka2 broker1 log
+      file: path=/var/log/kafka/broker1 state=directory mode=0755  owner={{ user }} group={{ group }}
+
+    - name: mkdir kafka2 broker2 log
+      file: path=/var/log/kafka/broker2 state=directory mode=0755  owner={{ user }} group={{ group }}
+
+    - name: config kafka2
+      copy: src="./files/kafka/kafka2_config/" dest="/usr/local/kafka/config" owner={{ user }} group={{ group }}
+
+    - name: copy kafka jar
+      copy: src="./files/kafka/lib/" dest="/usr/local/kafka/libs" owner={{ user }} group={{ group }}
+
+
+    - name: kafka | Ensure the service is running
+      shell: "sudo su - {{user}}  -c '. /home/{{user}}/.bashrc && /usr/local/kafka/bin/kafka-server-start.sh {{item}} &'"
+      with_items:
+        - /usr/local/kafka/config/server3.properties
+        - /usr/local/kafka/config/server4.properties

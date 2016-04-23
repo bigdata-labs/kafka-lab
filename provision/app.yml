@@ -1,0 +1,19 @@
+---
+- hosts: app
+  sudo: yes
+  vars:
+    - user: cloud
+    - group: users
+    ##python -c 'import crypt; print crypt.crypt("cloud", "$1$SomeSalt$")'
+    - password: $1$SomeSalt$15avH4qSlfRSEvC0bIn2./
+
+  tasks:
+    - include: tasks/create-swap-space.yml
+    - include: tasks/common.yml
+    - include: tasks/jdk8.yml
+
+
+    - name: copy KafkaOffsetMonitor
+      copy: src="./files/kafka-monitor/KafkaOffsetMonitor-assembly-0.2.1.jar" dest="/home/{{user}}" owner={{ user }} group={{ group }}
+    # - name: run monitor
+    #   shell: "sudo su - {{user}} -c 'java -cp /home/{{user}}/KafkaOffsetMonitor-assembly-0.2.1.jar com.quantifind.kafka.offsetapp.OffsetGetterWeb --zk zookeeper3,zookeeper2,zookeeper1/kafka --port 8086 --refresh 10.seconds --retain 2.days'"

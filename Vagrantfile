@@ -51,6 +51,8 @@ Vagrant.configure(2) do |config|
   end
 
 
+
+
   ##kafka1 node
   config.vm.define "kafka1" do |node|
       node.vm.box = machine_box
@@ -70,6 +72,28 @@ Vagrant.configure(2) do |config|
           ansible.inventory_path = 'provision/inventory'
           ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
           ansible.limit = 'kafka1'
+      end
+  end
+
+  ##app
+  config.vm.define "app" do |node|
+      node.vm.box = machine_box
+      node.vm.box_url = machine_box_url
+      node.vm.hostname = "app"
+      node.vm.network "private_network", ip: "192.168.2.12"
+      node.vm.network "forwarded_port", guest: 8086, host: 18086
+
+      node.vm.provider "virtualbox" do |n|
+          n.name = "app"
+          n.memory = 512
+          n.cpus = 1
+      end
+
+      node.vm.provision :ansible do |ansible|
+          ansible.playbook = "provision/app.yml"
+          ansible.inventory_path = 'provision/inventory'
+          ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
+          ansible.limit = 'app'
       end
   end
 

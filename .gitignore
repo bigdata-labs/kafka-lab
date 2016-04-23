@@ -2,6 +2,7 @@
 **/zookeeper-*.tar.gz
 **/jdk*.tar.gz
 **/scala-*.tgz
+provision/files/kafka-monitor/*.jar
 
 .gradle
 build/

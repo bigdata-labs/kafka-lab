@@ -1,5 +1,5 @@
 ---
-- hosts: app
+- hosts: log
   sudo: yes
   vars:
     - user: cloud
@@ -12,9 +12,6 @@
     - include: tasks/common.yml
     - include: tasks/jdk8.yml
 
-
-    - name: copy KafkaOffsetMonitor
-      copy: src="./files/kafka-monitor/KafkaOffsetMonitor-assembly-0.2.1.jar" dest="/home/{{user}}" owner={{ user }} group={{ group }}
 
 
     # - name: copy flume
@@ -36,6 +33,18 @@
     - name: conf logstash
       copy: src="./files/logstash/conf/" dest="/usr/local/logstash/conf/" owner={{ user }} group={{ group }}
 
+
+    - name: copy kibana
+      copy: src="./files/kibana/kibana-4.5.1-linux-x64.tar.gz" dest="/tmp" owner={{ user }} group={{ group }}
+    - name: unarchive elasticsearch
+      unarchive: src="/tmp/kibana-4.5.1-linux-x64.tar.gz" dest="/usr/local/" owner={{ user }} group={{ group }} copy=no
+    - file: src="/usr/local/kibana-4.5.1-linux-x64" dest="/usr/local/kibana" owner={{ user }} group={{ group }} state=link
+    - name: conf kibana
+      copy: src="./files/kibana/config/" dest="/usr/local/kibana/config/" owner={{ user }} group={{ group }}
+    - name: start kibana
+      shell: "sudo su - {{user}} -c '/usr/local/kibana/bin/kibana &'"
+      ignore_errors: yes
+
     - name: copy elasticsearch
       copy: src="./files/elasticsearch/elasticsearch-2.3.3.zip" dest="/tmp" owner={{ user }} group={{ group }}
     - name: unarchive elasticsearch
@@ -45,7 +54,15 @@
       copy: src="./files/elasticsearch/config/" dest="/usr/local/elasticsearch/config/" owner={{ user }} group={{ group }}
 
     - name: install head plugin
-      shell: "sudo su - {{user}} -c '/usr/local/elasticsearch/bin/plugin install mobz/elasticsearch-head"
+      shell: "sudo su - {{user}} -c '/usr/local/elasticsearch/bin/plugin install mobz/elasticsearch-head'"
+      ignore_errors: yes
+
+    - name: create log directory
+      file: path=/var/log/elasticsearch/logs state=directory mode=0755  owner={{ user }} group={{ group }}
+
+
+    - name: start elasticsearch
+      shell: "sudo su - {{user}} -c '/usr/local/elasticsearch/bin/elasticsearch -d '"
       ignore_errors: yes
 
 

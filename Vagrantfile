@@ -43,6 +43,7 @@ Vagrant.configure(2) do |config|
           machine.vm.provision :ansible do |ansible|
                   ansible.playbook = "provision/zookeeper.yml"
                   ansible.inventory_path = 'provision/inventory'
+                  ansible.verbose = "vvvv"
                   ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
                   ansible.limit = 'zookeeper'
           end
@@ -60,6 +61,7 @@ Vagrant.configure(2) do |config|
       node.vm.hostname = "kafka1"
       node.vm.network "private_network", ip: "192.168.2.161"
       node.vm.network "forwarded_port", guest: 9092, host: 19092
+
 
       node.vm.provider "virtualbox" do |n|
           n.name = "kafka1"
@@ -116,6 +118,32 @@ Vagrant.configure(2) do |config|
           ansible.inventory_path = 'provision/inventory'
           ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
           ansible.limit = 'kafka2'
+      end
+  end
+
+
+  ## log kanban node
+  config.vm.define "log" do |node|
+      node.vm.box = machine_box
+      node.vm.box_url = machine_box_url
+      node.vm.hostname = "log"
+      node.vm.network "private_network", ip: "192.168.2.77"
+      node.vm.network "forwarded_port", guest: 9200, host: 19200
+      node.vm.network "forwarded_port", guest: 5601, host: 15601
+
+      node.vm.synced_folder "logs/", "/var/logs/", create:true
+
+      node.vm.provider "virtualbox" do |n|
+          n.name = "log"
+          n.memory = 512
+          n.cpus = 1
+      end
+
+      node.vm.provision :ansible do |ansible|
+          ansible.playbook = "provision/log.yml"
+          ansible.inventory_path = 'provision/inventory'
+          ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
+          ansible.limit = 'log'
       end
   end
 

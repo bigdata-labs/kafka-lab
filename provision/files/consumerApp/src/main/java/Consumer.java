@@ -34,7 +34,7 @@ public class Consumer {
             System.out.println("===========================");
             System.out.println(consumerRecord.key() + " : " + consumerRecord.value() );
         }
-        kafkaConsumer.commitAsync();
+        kafkaConsumer.commitSync();
 
         kafkaConsumer.close();
 

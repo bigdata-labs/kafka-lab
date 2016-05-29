@@ -130,13 +130,15 @@ Vagrant.configure(2) do |config|
       node.vm.network "private_network", ip: "192.168.2.77"
       node.vm.network "forwarded_port", guest: 9200, host: 19200
       node.vm.network "forwarded_port", guest: 5601, host: 15601
+      node.vm.network "forwarded_port", guest: 5000, host: 15000
+
 
       node.vm.synced_folder "logs/", "/var/logs/", create:true
 
       node.vm.provider "virtualbox" do |n|
           n.name = "log"
-          n.memory = 512
-          n.cpus = 1
+          n.memory = 1024
+          n.cpus = 4
       end
 
       node.vm.provision :ansible do |ansible|

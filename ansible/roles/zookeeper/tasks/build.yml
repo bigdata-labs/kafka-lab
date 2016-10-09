@@ -1,7 +1,7 @@
 ---
 - name: Create Zookeeper directories
   become: yes
-  # become_user: "{{ zookeeper.user }}"
+  become_user: "{{ zookeeper.user }}"
   file:
     path: "{{ item }}"
     owner: "{{ zookeeper.user }}"

@@ -1,0 +1,45 @@
+---
+- hosts: zookeeper
+  sudo: yes
+  vars_files:
+    - ./vars/base-env.yml
+    
+  roles:
+    - common
+    - name: users_and_groups
+      users_and_groups:
+        groups:
+          - name: zookeeper
+        users:
+          - name: zookeeper
+        sudoers:
+            - name: wheel
+              user: "%wheel"
+              runas: "ALL=(ALL)"
+              commands: "NOPASSWD: ALL"
+    - jdk8
+    - zookeeper
+
+
+- hosts: kafka1
+  sudo: yes
+  vars_files:
+    - ./vars/base-env.yml
+
+  roles:
+    - common
+
+    - name: users_and_groups
+      users_and_groups:
+        groups:
+          - name: kafka
+        users:
+          - name: kafka
+            group: kafka
+        sudoers:
+            - name: wheel
+              user: "%wheel"
+              runas: "ALL=(ALL)"
+              commands: "NOPASSWD: ALL"
+    - jdk8
+    - kafka

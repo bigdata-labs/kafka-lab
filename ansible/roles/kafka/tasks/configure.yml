@@ -8,6 +8,8 @@
     line: "127.0.0.1 {{ ansible_hostname }}"
   notify:
     - restart kafka
+  tags:
+    - kafka
 
 - name: Copy AWS autodiscover script
   become: yes
@@ -19,6 +21,8 @@
     group: "{{ kafka.group }}"
     mode: 0750
   when: kafka.aws_cluster_autodiscover.enabled
+  tags:
+    - kafka
 
 - name: Run AWS autodiscover script and grab cluster settings
   become: yes
@@ -28,6 +32,8 @@
     chdir: "/home/{{ kafka.user }}/bin"
   register: aws_cluster_autodiscover
   when: kafka.aws_cluster_autodiscover.enabled
+  tags:
+    - kafka
 
 - name: Set cluster facts based on AWS autodiscover script output
   set_fact:
@@ -35,6 +41,8 @@
       aws_cluster_autodiscover:
         data: "{{ aws_cluster_autodiscover.stdout | from_json }}"
   when: kafka.aws_cluster_autodiscover.enabled
+  tags:
+    - kafka
 
 - name: Setup environment config
   become: yes
@@ -45,6 +53,8 @@
     src: environment.j2
   notify:
     - restart kafka
+  tags:
+    - kafka
 
 - name: Create log4j.properties
   become: yes
@@ -55,6 +65,8 @@
     src: log4j.properties.j2
   notify:
     - restart kafka
+  tags:
+    - kafka
 
 - name: Create server.properties
   become: yes
@@ -65,18 +77,27 @@
     src: server.properties.j2
   notify:
     - restart kafka
+  tags:
+    - kafka
 
 - name: Ensure Kafka is running
   become: yes
   service:
     name: kafka
     state: started
-    
+  tags:
+    - kafka
+
 - name: Flush handlers to ensure Kafka is up to date
   meta: flush_handlers
+  tags:
+    - kafka
 
 - name: Wait for Kafka port
   wait_for:
     port: "{{ kafka.port }}"
     state: started
     timeout: 120
+  tags:
+    - kafka
+    

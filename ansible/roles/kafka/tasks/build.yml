@@ -10,12 +10,16 @@
     - "/home/{{ kafka.user }}/tmp"
     - "/home/{{ kafka.user }}/log"
     - "/home/{{ kafka.user }}/data"
+  tags:
+    - kafka
 
 - name: Remove lost+found in the datadir
   become: yes
   file:
     path: "/home/{{ kafka.user }}/data/lost+found"
     state: absent
+  tags:
+    - kafka
 
 - name: Fetch kafka binary package
   become: yes
@@ -23,6 +27,8 @@
   get_url:
     dest: "/home/{{ kafka.user }}/tmp/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
     url: "{{ kafka.apache_mirror }}/kafka/{{ kafka.version_kafka }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
+  tags:
+    - kafka
 
 - name: Uncompress the kafka tar
   become: yes
@@ -32,6 +38,8 @@
     creates: "/home/{{ kafka.user }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}"
     dest: "/home/{{ kafka.user }}"
     src: "/home/{{ kafka.user }}/tmp/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
+  tags:
+    - kafka
 
 - name: Link kafka to the right version
   become: yes
@@ -40,6 +48,8 @@
     path: "/home/{{ kafka.user }}/kafka"
     src: "/home/{{ kafka.user }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}"
     state: link
+  tags:
+    - kafka
 
 - name: link config dir
   become: yes
@@ -59,9 +69,14 @@
     src: kafka.conf.j2
   notify:
     - restart kafka
+  tags:
+    - kafka
 
 - name: Ensure Kafka runs on boot
   become: yes
   service:
     enabled: yes
     name: kafka
+  tags:
+    - kafka
+    

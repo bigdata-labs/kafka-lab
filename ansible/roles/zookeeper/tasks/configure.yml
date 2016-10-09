@@ -10,6 +10,8 @@
     group: "{{ zookeeper.group }}"
     mode: 0750
   when: zookeeper.aws_cluster_autodiscover.enabled
+  tags:
+    - zookeeper
 
 - name: Run AWS autodiscover script and grab ID
   become: yes
@@ -19,6 +21,8 @@
     chdir: "/home/{{ zookeeper.user }}/bin"
   register: aws_cluster_autodiscover
   when: zookeeper.aws_cluster_autodiscover.enabled
+  tags:
+    - zookeeper
 
 - name: Set autodiscover id based AWS autodiscover script
   set_fact:
@@ -26,6 +30,8 @@
       aws_cluster_autodiscover:
         data: "{{ aws_cluster_autodiscover.stdout | from_json }}"
   when: zookeeper.aws_cluster_autodiscover.enabled
+  tags:
+    - zookeeper
 
 - name: Setup myid
   become: yes
@@ -35,6 +41,8 @@
     src: myid.j2
   notify:
    - restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Setup zoo.cfg file
   become: yes
@@ -45,6 +53,8 @@
     src: zoo.cfg.j2
   notify:
    - restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Create Zookeeper log4j config
   become: yes
@@ -55,6 +65,8 @@
     src: log4j.properties.j2
   notify:
     - restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Setup Zookeeper environment config
   become: yes
@@ -65,18 +77,26 @@
     src: environment.j2
   notify:
     - restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Start Zookeeper service
   become: yes
   service:
     name: zookeeper
     state: started
+  tags:
+    - zookeeper
 
 - name: Flush handlers to ensure Zookeeper is up to date
   meta: flush_handlers
+  tags:
+    - zookeeper
 
 - name: Wait for Zookeeper port
   wait_for:
     port: "{{ zookeeper.client_port }}"
     state: started
     timeout: 30
+  tags:
+    - zookeeper

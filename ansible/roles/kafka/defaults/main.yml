@@ -6,7 +6,7 @@ kafka:
   conf_dir: /home/kafka/etc
   data_dir: /home/kafka/data
   default_replication_factor: 1
-  group: kafka
+  group: "{{user_group}}"
   heap_opts: "-Xmx{{ (ansible_memtotal_mb / 2) | int }}m -Xms{{ (ansible_memtotal_mb / 2) | int }}m"
   id: 1
   jmx_port: 9999
@@ -27,7 +27,7 @@ kafka:
   socket_send_buffer_bytes: 1048576
   tarball_location: /home/kafka/tmp
   upstart_conf: /etc/init/kafka.conf
-  user: kafka
+  user: "{{user}}"
   version_kafka: "0.10.0.0"
   version_scala: "2.11"
   zookeeper_connection_timeout_ms: 1000000

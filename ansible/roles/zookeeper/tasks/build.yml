@@ -4,6 +4,7 @@
   become_user: "root"
   file:
     path: "{{ item }}"
+    recurse: yes
     owner: "{{ zookeeper.user }}"
     group: "{{ zookeeper.group }}"
     state: directory

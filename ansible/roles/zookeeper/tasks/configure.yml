@@ -1,37 +1,5 @@
 ---
 
-- name: Copy AWS autodiscover script
-  become: yes
-  become_user: "{{ zookeeper.user }}"
-  copy:
-    src: aws_cluster_autodiscover
-    dest: "/home/{{ zookeeper.user }}/bin/aws_cluster_autodiscover"
-    owner: "{{ zookeeper.user }}"
-    group: "{{ zookeeper.group }}"
-    mode: 0750
-  when: zookeeper.aws_cluster_autodiscover.enabled
-  tags:
-    - zookeeper
-
-- name: Run AWS autodiscover script and grab ID
-  become: yes
-  become_user: "{{ zookeeper.user }}"
-  command: "./aws_cluster_autodiscover {{ zookeeper.hosts | join(',') }} {{ zookeeper.aws_cluster_autodiscover.r53_zone_id }} \"{{ zookeeper.aws_cluster_autodiscover.lookup_filter }}\" {{ zookeeper.aws_cluster_autodiscover.id_tag_name}}"
-  args:
-    chdir: "/home/{{ zookeeper.user }}/bin"
-  register: aws_cluster_autodiscover
-  when: zookeeper.aws_cluster_autodiscover.enabled
-  tags:
-    - zookeeper
-
-- name: Set autodiscover id based AWS autodiscover script
-  set_fact:
-    zookeeper:
-      aws_cluster_autodiscover:
-        data: "{{ aws_cluster_autodiscover.stdout | from_json }}"
-  when: zookeeper.aws_cluster_autodiscover.enabled
-  tags:
-    - zookeeper
 
 - name: Setup myid
   become: yes

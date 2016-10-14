@@ -1,10 +1,10 @@
 ---
-
-
 - name: Setup myid
   become: yes
-  become_user: "{{ zookeeper.user }}"
+  become_user: "root"
   template:
+    owner: "{{ zookeeper.user }}"
+    group: "{{ zookeeper.group }}"
     dest: "{{ zookeeper.data_dir }}/myid"
     src: myid.j2
   notify:
@@ -13,9 +13,9 @@
     - zookeeper
 
 - name: Setup zoo.cfg file
-  become: yes
-  become_user: "{{ zookeeper.user }}"
   template:
+    owner: "{{ zookeeper.user }}"
+    group: "{{ zookeeper.group }}"
     dest: "{{ zookeeper.conf_dir }}/zoo.cfg"
     mode: 0644
     src: zoo.cfg.j2
@@ -25,9 +25,9 @@
     - zookeeper
 
 - name: Create Zookeeper log4j config
-  become: yes
-  become_user: "{{ zookeeper.user }}"
   template:
+    owner: "{{ zookeeper.user }}"
+    group: "{{ zookeeper.group }}"
     dest: "{{ zookeeper.conf_dir }}/log4j.properties"
     mode: 0644
     src: log4j.properties.j2
@@ -37,9 +37,9 @@
     - zookeeper
 
 - name: Setup Zookeeper environment config
-  become: yes
-  become_user: "{{ zookeeper.user }}"
   template:
+    owner: "{{ zookeeper.user }}"
+    group: "{{ zookeeper.group }}"
     dest: "{{ zookeeper.conf_dir }}/environment"
     mode: 0644
     src: environment.j2
@@ -49,7 +49,6 @@
     - zookeeper
 
 - name: Start Zookeeper service
-  become: yes
   service:
     name: zookeeper
     state: started

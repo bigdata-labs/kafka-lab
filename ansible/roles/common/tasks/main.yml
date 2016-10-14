@@ -5,7 +5,7 @@
 - name: copy sources.list
   copy: src="sources.list" dest="/etc/apt/" force=yes
 
-- apt: update_cache=yes cache_valid_time=7200
+- apt: update_cache=yes
   ignore_errors: yes
 
 - name: create  user_group
@@ -28,3 +28,4 @@
     - wget
     - unzip
     - openssh-server
+#

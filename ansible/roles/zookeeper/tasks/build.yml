@@ -1,44 +1,45 @@
 ---
-- name: Create Zookeeper directories
-  become: yes
-  become_user: "root"
+- name: "Create Zookeeper directories"
+  become: true
+  become_user: root
   file:
-    path: "{{ item }}"
-    recurse: yes
-    owner: "{{ zookeeper.user }}"
     group: "{{ zookeeper.group }}"
+    owner: "{{ zookeeper.user }}"
+    path: "{{ item }}"
+    recurse: true
     state: directory
+  tags:
+    - zookeeper
   with_items:
     - "/home/{{ zookeeper.user }}/bin"
     - "{{ zookeeper.conf_dir }}"
     - "{{ zookeeper.data_dir }}"
     - "{{ zookeeper.log_dir }}"
-  tags:
-    - zookeeper
 
-- name: Download ZooKeeper
-  become: yes
-  become_user: "{{ zookeeper.user }}"
+- name: "Download ZooKeeper"
+  become: true
+  become_user: "root"
   get_url:
-    url: "http://www.mirrorservice.org/sites/ftp.apache.org/zookeeper/zookeeper-{{ zookeeper.version }}/zookeeper-{{ zookeeper.version }}.tar.gz"
     dest: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}.tar.gz"
+    url: "http://www.mirrorservice.org/sites/ftp.apache.org/zookeeper/zookeeper-{{ zookeeper.version }}/zookeeper-{{ zookeeper.version }}.tar.gz"
+    owner: "{{ zookeeper.user }}"
   tags:
     - zookeeper
 
-- name: Unpack Zookeeper
-  become: yes
-  become_user: "{{ zookeeper.user }}"
+- name: "Unpack Zookeeper"
+  become: true
+  become_user: "root"
+  tags:
+    - zookeeper
   unarchive:
-    copy: no
+    copy: false
     creates: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}"
     dest: "/home/{{ zookeeper.user }}"
     src: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}.tar.gz"
-  tags:
-    - zookeeper
 
-- name: Link to Zookeeper Directory
-  become: yes
-  become_user: "{{ zookeeper.user }}"
+- name: "Link to Zookeeper Directory"
+  become: true
+  become_user: "root"
   file:
     dest: "{{ zookeeper.install_dir }}"
     src: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}"
@@ -46,20 +47,12 @@
   tags:
     - zookeeper
 
-- name: Create Zookeeper service
-  become: yes
-  template:
-    dest: /etc/init/zookeeper.conf
-    mode: 644
-    owner: root
-    src: zookeeper.service.j2
+- name: "Create the Zookeeper systemd environment file"
   tags:
-    - zookeeper
+    - service
+  template: src="environment.j2" dest="{{ zookeeper.conf_dir }}/environment" owner={{ zookeeper.user }} group={{ zookeeper.group }} mode=0644
 
-- name: Ensure Zookeeper runs on boot
-  become: yes
-  service:
-    enabled: yes
-    name: zookeeper
+- name: "Create the Zookeeper systemd service file"
   tags:
-    - zookeeper
+    - service
+  template: src="zookeeper.service.j2" dest=/etc/systemd/system/zookeeper.service owner={{ zookeeper.user }} group={{ zookeeper.group }} mode=0644

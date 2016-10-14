@@ -1,6 +1,7 @@
 
 # Modified from http://packages.ubuntu.com/saucy/zookeeperd
 NAME=zookeeper
+ZOOKEEPER_HOME={{ zookeeper.install_dir }}
 ZOOCFGDIR={{ zookeeper.conf_dir }}
 ZOODIR={{ zookeeper.install_dir }}
 
@@ -13,7 +14,7 @@ GROUP=$NAME
 PIDDIR=/var/run/$NAME
 PIDFILE=$PIDDIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-JAVA=/usr/bin/java
+JAVA="{{JAVA_HOME}}/bin/java"
 ZOOMAIN="org.apache.zookeeper.server.quorum.QuorumPeerMain"
 ZOO_LOG4J_PROP="INFO,ROLLINGFILE"
 JMXLOCALONLY=false

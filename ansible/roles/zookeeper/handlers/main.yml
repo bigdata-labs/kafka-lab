@@ -1,19 +1,12 @@
 ---
-
-- name: start zookeeper
-  become: yes
-  service:
-    name: zookeeper
-    state: started
-
-- name: stop zookeeper
-  become: yes
-  service:
-    name: zookeeper
-    state: stopped
-
-- name: restart zookeeper
-  become: yes
-  service:
-    name: zookeeper
-    state: restarted
+# - name: stop zookeeper
+#   become: yes
+#   systemd: name=zookeeper state=stopped
+#
+# - name: restart zookeeper
+#   systemd: yes
+#   service: name=zookeeper state=restarted
+#
+#
+# - name: start zookeeper
+#   systemd: enabled=true name=zookeeper state=started

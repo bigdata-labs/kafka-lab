@@ -11,14 +11,10 @@ Vagrant.configure(2) do |config|
 
   ANSIBLE_RAW_SSH_ARGS = []
   VAGRANT_VM_PROVIDER = "virtualbox"
-  machine_box = "trusty-server-cloudimg-amd64-vagrant-disk1"
-  machine_box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
-
-
+  machine_box = "boxcutter/ubuntu1604"
 
   config.vm.define "node1" do |machine|
     machine.vm.box = machine_box
-    machine.vm.box_url = machine_box_url
     machine.vm.hostname = "node1"
     machine.vm.network "private_network", ip: "192.168.7.151"
     machine.vm.provider "virtualbox" do |node|
@@ -31,7 +27,6 @@ Vagrant.configure(2) do |config|
 
    config.vm.define "node2" do |machine|
      machine.vm.box = machine_box
-     machine.vm.box_url = machine_box_url
      machine.vm.hostname = "node2"
      machine.vm.network "private_network", ip: "192.168.7.152"
      machine.vm.provider "virtualbox" do |node|
@@ -44,7 +39,6 @@ Vagrant.configure(2) do |config|
 
     config.vm.define "node3" do |machine|
       machine.vm.box = machine_box
-      machine.vm.box_url = machine_box_url
       machine.vm.hostname = "node3"
       machine.vm.network "private_network", ip: "192.168.7.153"
       machine.vm.provider "virtualbox" do |node|

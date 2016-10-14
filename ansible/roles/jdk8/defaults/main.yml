@@ -3,5 +3,5 @@
 jdk8_path: jdk-8u66-linux-x64.tar.gz
 jdk8_version_name: jdk1.8.0_66
 JAVA_HOME: /usr/lib/jvm/java
-user:
+user: cloud
 user_group: cloud

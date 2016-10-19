@@ -1,5 +1,13 @@
 ---
 
+- group: name={{zookeeper.group}} system=yes
+  tags:
+    - zookeeper
+
+- user: name={{zookeeper.user}} group={{zookeeper.group}} system=yes
+  tags:
+    - zookeeper
+
 - name: Install Zookeeper
   include: build.yml
   tags:

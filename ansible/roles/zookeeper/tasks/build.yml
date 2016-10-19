@@ -1,7 +1,7 @@
 ---
 - name: "Create Zookeeper directories"
   become: true
-  become_user: root
+  become_user: "{{zookeeper.user}}"
   file:
     group: "{{ zookeeper.group }}"
     owner: "{{ zookeeper.user }}"
@@ -12,13 +12,12 @@
     - zookeeper
   with_items:
     - "/home/{{ zookeeper.user }}/bin"
-    - "{{ zookeeper.conf_dir }}"
     - "{{ zookeeper.data_dir }}"
     - "{{ zookeeper.log_dir }}"
 
 - name: "Download ZooKeeper"
   become: true
-  become_user: "root"
+  become_user: "{{zookeeper.user}}"
   get_url:
     dest: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}.tar.gz"
     url: "http://www.mirrorservice.org/sites/ftp.apache.org/zookeeper/zookeeper-{{ zookeeper.version }}/zookeeper-{{ zookeeper.version }}.tar.gz"
@@ -28,7 +27,7 @@
 
 - name: "Unpack Zookeeper"
   become: true
-  become_user: "root"
+  become_user: "{{zookeeper.user}}"
   tags:
     - zookeeper
   unarchive:
@@ -39,7 +38,7 @@
 
 - name: "Link to Zookeeper Directory"
   become: true
-  become_user: "root"
+  become_user: "{{zookeeper.user}}"
   file:
     dest: "{{ zookeeper.install_dir }}"
     src: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}"
@@ -49,10 +48,11 @@
 
 - name: "Create the Zookeeper systemd environment file"
   tags:
-    - service
+    - zookeeper
   template: src="environment.j2" dest="{{ zookeeper.conf_dir }}/environment" owner={{ zookeeper.user }} group={{ zookeeper.group }} mode=0644
+
 
 - name: "Create the Zookeeper systemd service file"
   tags:
-    - service
+    - zookeeper
   template: src="zookeeper.service.j2" dest=/etc/systemd/system/zookeeper.service owner={{ zookeeper.user }} group={{ zookeeper.group }} mode=0644

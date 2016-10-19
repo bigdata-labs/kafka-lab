@@ -48,10 +48,14 @@
   tags:
     - zookeeper
 
-- name: Start Zookeeper service
-  service:
-    name: zookeeper
-    state: started
+- name: reload systemctl
+  command: systemctl daemon-reload
+  when: ansible_service_mgr == 'systemd'
+  tags:
+    - zookeeper
+
+- name: restart zookeeper
+  command: systemctl start zookeeper.service
   tags:
     - zookeeper
 

@@ -1,6 +1,8 @@
 ---
-- stat: path=/usr/lib/jvm/
+- stat: path="/usr/lib/jvm/{{jdk8_version_name}}/bin/java"
   register: jvm
+  tags:
+    - jdk
 
 - name: copy jdk
   copy: src="{{jdk8_path}}" dest="/tmp"
@@ -9,7 +11,7 @@
     - jdk
 
 - name: mkdir for Java
-  file: path="/usr/lib/jvm/" state=directory owner={{ user }} group={{ user_group }} mode="u=rwx,go=rx"
+  file: path="/usr/lib/jvm/" state=directory  mode="u=rwx,go=rx"
   when: jvm.stat.exists == False
   tags:
     - jdk
@@ -20,7 +22,7 @@
   tags:
     - jdk
 
-- file: src="/usr/lib/jvm/{{jdk8_version_name}}" dest="{{JAVA_HOME}}" owner={{ user }} group={{ user_group }}  state=link
+- file: src="/usr/lib/jvm/{{jdk8_version_name}}" dest="{{JAVA_HOME}}"  state=link
   when: jvm.stat.exists == False
   tags:
     - jdk

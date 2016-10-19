@@ -5,17 +5,17 @@
 - name: copy sources.list
   copy: src="sources.list" dest="/etc/apt/" force=yes
 
-- apt: update_cache=yes
+- apt: update_cache=yes cache_valid_time=72000
   ignore_errors: yes
 
-- name: create  user_group
-  group: name={{ user_group }} state=present
-  when: user_group is defined
-
-- name: create user
-  user: name={{ user }} createhome=yes   password={{ password }} groups={{ user_group }} append=yes
-  when: user is defined and password is defined
-
+# - name: create  user_group
+#   group: name={{ user_group }} state=present
+#   when: user_group is defined
+#
+# - name: create user
+#   user: name={{ user }} createhome=yes   password={{ password }} groups={{ user_group }} append=yes
+#   when: user is defined and password is defined
+#
 
 - name: add /sbin to path
   lineinfile: dest="/etc/profile" line="PATH=/sbin/:$PATH"

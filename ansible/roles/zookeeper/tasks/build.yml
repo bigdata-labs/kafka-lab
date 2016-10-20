@@ -20,7 +20,7 @@
   become_user: "{{zookeeper.user}}"
   get_url:
     dest: "/home/{{ zookeeper.user }}/zookeeper-{{ zookeeper.version }}.tar.gz"
-    url: "https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-{{ zookeeper.version }}/zookeeper-{{ zookeeper.version }}.tar.gz"
+    url: "http://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-{{ zookeeper.version }}/zookeeper-{{ zookeeper.version }}.tar.gz"
     owner: "{{ zookeeper.user }}"
   tags:
     - zookeeper

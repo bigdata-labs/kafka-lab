@@ -6,6 +6,8 @@
     recurse: yes
     state: directory
     path: "{{ item }}"
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   with_items:
     - "/home/{{ kafka.user }}/bin"
     - "/home/{{ kafka.user }}/tmp"
@@ -19,6 +21,8 @@
   file:
     path: "/home/{{ kafka.user }}/data/lost+found"
     state: absent
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   tags:
     - kafka
 
@@ -28,55 +32,45 @@
   get_url:
     dest: "/home/{{ kafka.user }}/tmp/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
     url: "{{ kafka.apache_mirror }}/kafka/{{ kafka.version_kafka }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   tags:
     - kafka
 
 - name: Uncompress the kafka tar
   become: yes
-  become_user: "{{ kafka.user }}"
+  become_user: "root"
   unarchive:
     copy: no
     creates: "/home/{{ kafka.user }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}"
     dest: "/home/{{ kafka.user }}"
     src: "/home/{{ kafka.user }}/tmp/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}.tgz"
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   tags:
     - kafka
 
 - name: Link kafka to the right version
   become: yes
-  become_user: "{{ kafka.user }}"
+  become_user: "root"
   file:
     path: "/home/{{ kafka.user }}/kafka"
     src: "/home/{{ kafka.user }}/kafka_{{ kafka.version_scala }}-{{ kafka.version_kafka }}"
     state: link
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   tags:
     - kafka
 
 - name: link config dir
   become: yes
-  become_user: "{{ kafka.user }}"
+  become_user: "root"
   file:
     force: yes
     path: "/home/{{ kafka.user }}/etc"
     src: "/home/{{ kafka.user }}/kafka/config"
     state: link
-
-- name: Create Kafka service
-  become: yes
-  template:
-    dest: "{{ kafka.upstart_conf }}"
-    owner: root
-    mode: 0644
-    src: kafka.conf.j2
-  notify:
-    - restart kafka
-  tags:
-    - kafka
-
-- name: Ensure Kafka runs on boot
-  become: yes
-  service:
-    enabled: yes
-    name: kafka
+    owner: "{{ kafka.user }}"
+    group: "{{ kafka.group }}"
   tags:
     - kafka

@@ -1,8 +1,9 @@
 ---
 
 kafka:
-  apache_mirror: http://apache.mirror.anlx.net/
+  apache_mirror: http://apache.fayea.com
   auto_create_topics: "false"
+  install_dir: /home/kafka/kafka
   conf_dir: /home/kafka/etc
   data_dir: /home/kafka/data
   default_replication_factor: 1
@@ -32,6 +33,6 @@ kafka:
   version_scala: "2.11"
   zookeeper_connection_timeout_ms: 1000000
   zookeeper_hosts:
-    - zk1_host
-    - zk2_host
-    - zk3_host
+    - 192.168.7.151
+    - 192.168.7.152
+    - 192.168.7.153

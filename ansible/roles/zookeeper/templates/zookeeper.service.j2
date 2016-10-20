@@ -9,7 +9,7 @@ Group={{zookeeper.group}}
 #Environment="ZOO_LOG_DIR=/home/zookeeper/zookeeper/log"
 Environment=JAVA_HOME={{JAVA_HOME}}
 Environment="ZOO_LOG_DIR=/home/zookeeper/log"
-ExecStart={{zookeeper.install_dir}}/bin/zkServer.sh start
+ExecStart={{zookeeper.install_dir}}/bin/zkServer.sh start-foreground
 ExecStop={{zookeeper.install_dir}}/bin/zkServer.sh stop
 
 [Install]

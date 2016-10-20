@@ -8,6 +8,11 @@
   tags:
     - zookeeper
 
+## zookeeper 启动要加入此hosts
+- name: add localhost into /etc/hosts
+  lineinfile: line="127.0.0.1 localhost.localdomain localhost" dest="/etc/hosts"
+
+
 - name: Install Zookeeper
   include: build.yml
   tags:

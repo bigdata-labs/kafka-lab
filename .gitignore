@@ -44,6 +44,9 @@ gradle-app.setting
 ## File-based project format:
 *.iws
 
+# ansible
+*.retry
+
 ## Plugin-specific files:
 
 # IntelliJ

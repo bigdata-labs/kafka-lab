@@ -11,6 +11,6 @@
 # - name: start zookeeper
 #   systemd: enabled=true name=zookeeper state=started
 - name: restart zookeeper
-  command: systemctl start zookeeper.service
+  command: systemctl restart zookeeper.service
   tags:
     - zookeeper

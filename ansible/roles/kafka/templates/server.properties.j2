@@ -10,17 +10,24 @@ broker.id={{ kafka.id }}
 
 ############################# Socket Server Settings #############################
 
-port={{ kafka.port }}
+port={{ kafka.brokerport }}
+host.name={{ kafka.hostname }}
+advertised.host.name={{ kafka.hostname }}
+advertised.port={{ kafka.brokerport }}
+listeners={{ kafka.listeners }}
 
+{#
 # Hostname the broker will bind to. If not set, the server will bind to all interfaces
 {% if kafka.listen_address is defined %}
-host.name={{ kafka.listen_address }}
+listeners={{ kafka.listen_address }}
 {% endif %}
 
 
 {% if kafka.advertised_host_name is defined %}
-advertised.host.name={{ kafka.advertised_host_name }}
+advertised.listeners={{ kafka.advertised_host_name }}
 {% endif %}
+#}
+
 
 {# The number of threads handling network requests #}
 num.network.threads={{ kafka.num_network_threads }}

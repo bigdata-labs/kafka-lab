@@ -20,6 +20,12 @@
 - name: add /sbin to path
   lineinfile: dest="/etc/profile" line="PATH=/sbin/:$PATH"
 
+# - name: disable ufw
+#   ufw: state='disabled'
+
+- name: remove iptables
+  apt: name="iptables" state="absent"
+
 
 
 - name: install softwares

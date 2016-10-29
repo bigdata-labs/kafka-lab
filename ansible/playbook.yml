@@ -13,6 +13,14 @@
     - jdk8
     - zookeeper
 
+- hosts: filebeat
+  sudo: yes
+  vars_files:
+    - ./vars/base-env.yml
+  roles:
+    - common
+    - filebeat
+
 
 - hosts: kafka1
   sudo: yes

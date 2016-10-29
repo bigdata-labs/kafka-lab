@@ -1,0 +1,32 @@
+---
+# tasks file for filebeat
+- name: install filebeat
+  apt: deb="{{ filebeat_deb_url }}" allow_unauthenticated=yes state=present
+  tags:
+    - filebeat
+    - install
+
+- name: config filebeat
+  template: src="filebeat.yml" dest="/etc/filebeat/filebeat.yml"
+  tags:
+    - filebeat
+    - config
+  notify:
+    - restart filebeat
+
+- name: flush handlers to prevent start then restart
+  meta: flush_handlers
+  tags:
+    - install
+    - filebeat
+    - config
+
+- name: start and enable filebeat
+  service:
+    name: filebeat
+    state: started
+    enabled: true
+  tags:
+    - install
+    - filebeat
+    - config

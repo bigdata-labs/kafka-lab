@@ -1,10 +1,21 @@
 ---
 # tasks file for filebeat
-- name: install filebeat
-  apt: deb="{{ filebeat_deb_url }}" allow_unauthenticated=yes state=present cache_valid_time=72000
+- stat: path=/tmp/filebeat.deb
+  register: filebeatdeb
+
+- name: get filebeat
+  get_url: url="{{ filebeat_deb_url }}" dest="/tmp/filebeat.deb" validate_certs=no
+  when: filebeatdeb.stat.exists == False
   tags:
     - filebeat
     - install
+
+- name: install filebeat
+  apt: deb="/tmp/filebeat.deb" allow_unauthenticated=yes state=present cache_valid_time=72000
+  tags:
+    - filebeat
+    - install
+
 
 - name: config filebeat
   template: src="filebeat.yml" dest="/etc/filebeat/filebeat.yml"

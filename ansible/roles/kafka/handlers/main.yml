@@ -1,6 +1,11 @@
 ---
 
 - name: restart kafka
-  command: systemctl restart kafka.service
+  service:
+    name: kafka.service
+    state: restarted
+    enabled: true
+  tags:
+    - kafka
   tags:
     - kafka

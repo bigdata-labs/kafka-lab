@@ -43,24 +43,16 @@
 
 - name: "Create the kafka systemd service file"
   template: src="kafka.service" dest=/etc/systemd/system/kafka.service owner={{ kafka.user }} group={{ kafka.group }} mode=0644
+  notify:
+    - restart kafka
   tags:
     - kafka
 
-
-- name: reload systemctl
-  command: systemctl daemon-reload
-  when: ansible_service_mgr == 'systemd'
-  tags:
-    - kafka
-
-- name: restart kafka
-  command: systemctl start kafka.service
-  tags:
-    - kafka
-
-
-- name: Flush handlers to ensure Kafka is up to date
-  meta: flush_handlers
+- name: start and enable filebeat
+  service:
+    name: kafka.service
+    state: started
+    enabled: true
   tags:
     - kafka
 

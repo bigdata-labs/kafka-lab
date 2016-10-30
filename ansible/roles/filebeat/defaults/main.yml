@@ -1,6 +1,6 @@
 ---
 # defaults file for filebeat
-filebeat_deb_url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.0.0-amd64.deb"
+filebeat_deb_url: "http://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.0.0-amd64.deb"
 filebeat_config:
   filebeat:
     prospectors:

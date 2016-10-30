@@ -6,7 +6,7 @@ kafka:
   conf_dir: /home/kafka/etc
   data_dir: /home/kafka/data
   default_replication_factor: 1
-  group: "{{user_group}}"
+  group: "{{ user_group }}"
   heap_opts: "-Xmx{{ (ansible_memtotal_mb / 2) | int }}m -Xms{{ (ansible_memtotal_mb / 2) | int }}m"
   id: 1
   listeners: "plaintext://:9092"

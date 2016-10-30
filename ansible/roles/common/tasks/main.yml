@@ -26,6 +26,12 @@
 - name: remove iptables
   apt: name="iptables" state="absent"
 
+- name: update host
+  blockinfile:
+    backup: yes
+    dest: "/etc/hosts"
+    block: |
+      {{ hosts }}
 
 
 - name: install softwares

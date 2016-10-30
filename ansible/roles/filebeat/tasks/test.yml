@@ -1,0 +1,10 @@
+---
+- name: mkdir nginx folder
+  file: path="/var/log/nginx/" state=directory mode="0666"
+  tags:
+    - filebeattest
+
+- name: copy access.log
+  copy: src="access.log" dest="/var/log/nginx/" mode="0666"
+  tags:
+    - filebeattest

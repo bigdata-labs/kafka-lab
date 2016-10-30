@@ -1,7 +1,7 @@
 ---
 # tasks file for filebeat
 - name: install filebeat
-  apt: deb="{{ filebeat_deb_url }}" allow_unauthenticated=yes state=present
+  apt: deb="{{ filebeat_deb_url }}" allow_unauthenticated=yes state=present cache_valid_time=72000
   tags:
     - filebeat
     - install
@@ -30,3 +30,5 @@
     - install
     - filebeat
     - config
+
+- include: "./test.yml"

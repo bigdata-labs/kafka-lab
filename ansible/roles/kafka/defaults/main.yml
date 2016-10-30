@@ -1,5 +1,4 @@
 ---
-
 kafka:
   apache_mirror: http://apache.fayea.com
   auto_create_topics: "false"
@@ -12,6 +11,7 @@ kafka:
   id: 1
   listeners: "plaintext://:9092"
   port: 9092
+  ip: "{{ ip }}"
   hostname: "{{ ip }}"
   brokerport: "9092"
   jmx_port: 9999
@@ -35,7 +35,4 @@ kafka:
   version_kafka: "0.10.1.0"
   version_scala: "2.11"
   zookeeper_connection_timeout_ms: 1000000
-  zookeeper_hosts:
-    - 192.168.7.151
-    - 192.168.7.152
-    - 192.168.7.153
+  zookeeper_connect: "{{ zk_hosts | join(',') }}"

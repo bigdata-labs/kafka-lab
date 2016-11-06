@@ -4,7 +4,7 @@ zk2_host: 192.168.7.152
 zk3_host: 192.168.7.153
 kafka1_host: 192.168.7.151
 JAVA_HOME: /usr/lib/jvm/java
-zk_hosts:
+zk_hosts_for_kafka:
   - "{{zk1_host}}:2181"
   - "{{zk2_host}}:2181"
   - "{{zk3_host}}:2181"

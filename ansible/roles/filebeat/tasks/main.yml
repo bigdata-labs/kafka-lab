@@ -2,6 +2,8 @@
 # tasks file for filebeat
 - stat: path=/tmp/filebeat.deb
   register: filebeatdeb
+  tags:
+    - filebeat
 
 - name: get filebeat
   get_url: url="{{ filebeat_deb_url }}" dest="/tmp/filebeat.deb" validate_certs=no
@@ -43,3 +45,5 @@
     - config
 
 - include: "./test.yml"
+  tags:
+    - filebeat

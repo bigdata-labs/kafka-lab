@@ -1,7 +1,7 @@
 ---
 kafka:
   apache_mirror: http://apache.fayea.com
-  auto_create_topics: "false"
+  auto_create_topics: "true" 
   install_dir: /home/kafka/kafka
   conf_dir: /home/kafka/etc
   data_dir: /home/kafka/data
@@ -35,4 +35,4 @@ kafka:
   version_kafka: "0.10.1.0"
   version_scala: "2.11"
   zookeeper_connection_timeout_ms: 1000000
-  zookeeper_connect: "{{ zk_hosts | join(',') }}"
+  zookeeper_connect: "{{ zk_hosts_for_kafka | join(',') }}"
